@@ -6,8 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { LayoutModule } from '@angular/cdk/layout';
+
 
 const MATERIAL_MODULES = [
   CommonModule,
@@ -17,12 +18,12 @@ const MATERIAL_MODULES = [
   MatSidenavModule,
   MatMenuModule,
   MatIconModule,
+  MatGridListModule
 ];
 
 @NgModule({
   imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
+    LayoutModule,
     MATERIAL_MODULES
   ],
   exports: MATERIAL_MODULES
