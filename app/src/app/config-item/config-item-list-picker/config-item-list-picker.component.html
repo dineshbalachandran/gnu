@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+    <mat-selection-list #shoes>
+        <mat-list-option *ngFor="let shoe of typesOfShoes">
+        {{shoe}}
+        </mat-list-option>
+    </mat-selection-list>
+    
+    <p>
+    Options selected: {{shoes.selectedOptions.selected.length}}
+    </p>
+</div>
+<div mat-dialog-actions>
+<a mat-button mat-dialog-close>Cancel</a>
+<button mat-button color="primary" mat-dialog-close>{{data.action}}</button>
+</div>

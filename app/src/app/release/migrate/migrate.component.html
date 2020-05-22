@@ -1,0 +1,39 @@
+  <mat-horizontal-stepper [linear]="true" #stepper>
+    <mat-step [stepControl]="firstFormGroup">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Choose target environment</ng-template>
+        <mat-form-field>
+            <mat-label>Environment</mat-label>
+            <mat-select [(value)]="selected" formControlName="firstCtrl">
+              <mat-option *ngFor="let environment of environments" [value]="environment">
+                {{environment}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        <div>
+          <button mat-button type="primary" matStepperNext>Connect</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step [stepControl]="secondFormGroup">
+      <form [formGroup]="secondFormGroup">
+        <ng-template matStepLabel>Select package(s) to migrate</ng-template>
+        <mat-form-field>
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="secondCtrl" placeholder="Ex. 1 Main St, New York, NY"
+                 required>
+        </mat-form-field>
+        <div>
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-button type="primary" matStepperNext>Migrate</button>
+        </div>
+      </form>
+    </mat-step>
+    <mat-step>
+      <ng-template matStepLabel>Done</ng-template>
+      <p>Migration completed.</p>
+      <div>        
+        <button mat-button type="primary" (click)="stepper.reset()">Close</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>

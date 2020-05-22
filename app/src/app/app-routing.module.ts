@@ -3,10 +3,10 @@ import { Routes, RouterModule } from '@angular/router';
 
 
 const routes: Routes = [
-  {path: '', redirectTo: '/package', pathMatch: 'full'},
+  {path: '', redirectTo: '/release', pathMatch: 'full'},
   {
-    path: 'package', 
-    loadChildren: () => import('./package/package.module').then(m => m.PackageModule)
+    path: 'release', 
+    loadChildren: () => import('./release/release.module').then(m => m.ReleaseModule)
   },
 ];
 
