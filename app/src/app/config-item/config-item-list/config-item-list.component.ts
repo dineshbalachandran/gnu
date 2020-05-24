@@ -2,8 +2,8 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { ConfigItemListDataSource } from './config-item-list-datasource';
-import { ConfigItem } from '../config-item.model';
+import { ConfigItemListDataSource } from '../../shared/datasource/config-item-list-datasource';
+import { ConfigItem } from '../../shared/model/config-item.model';
 
 @Component({
   selector: 'app-config-item-list',

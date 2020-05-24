@@ -3,7 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
-import { Package } from '../package.model';
+import { Package } from '../model/package.model';
 
 const EXAMPLE_DATA: Package[] = [
   new Package(1, 'Hydrogen', new Date('12/2/2020'), 'Dinesh', 'CDE', 'Open'),

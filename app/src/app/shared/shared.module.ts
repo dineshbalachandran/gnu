@@ -18,6 +18,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDialogModule }  from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatStepperModule } from '@angular/material/stepper';
+import { MatCheckboxModule } from '@angular/material/checkbox'
 
 const MATERIAL_MODULES = [
   MatCardModule,
@@ -36,8 +37,13 @@ const MATERIAL_MODULES = [
   MatRadioModule,
   MatDialogModule,
   MatListModule,
-  MatStepperModule, 
+  MatStepperModule,
+  MatCheckboxModule 
 ];
+
+const CDK_MODULES = [
+  LayoutModule
+]
 
 @NgModule({
   imports: [

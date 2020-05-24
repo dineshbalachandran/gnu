@@ -2,8 +2,8 @@ import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
-import { PackageListDataSource} from './package-list-datasource';
-import { Package } from '../package.model';
+import { PackageListDataSource} from '../../../shared/datasource/package-list-datasource';
+import { Package } from '../../../shared/model/package.model';
 
 @Component({
   selector: 'app-package-list',
