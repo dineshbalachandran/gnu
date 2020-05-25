@@ -5,8 +5,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
+import { Store } from '@ngrx/store';
+import { map } from 'rxjs/operators';
 import { Package } from '../../shared/model/package.model';
 import { PackageListDataSource } from '../../shared/datasource/package-list-datasource';
+import * as fromApp from '../../store/app.reducer';
 
 @Component({
   selector: 'app-migrate',
@@ -32,7 +35,8 @@ export class MigrateComponent implements AfterViewInit, OnInit {
 
   constructor(private _formBuilder: FormBuilder, 
     private router: Router,
-    private route: ActivatedRoute) { }
+    private route: ActivatedRoute,
+    private store: Store<fromApp.State>) { }
   
   
   ngAfterViewInit(): void {
@@ -47,7 +51,7 @@ export class MigrateComponent implements AfterViewInit, OnInit {
     });
     this.secondFormGroup = this._formBuilder.group({
     });
-    this.dataSource = new PackageListDataSource();
+    this.dataSource = new PackageListDataSource(this.store.select('migrate').pipe(map(migrateState => migrateState.packages)));
   }
 
 

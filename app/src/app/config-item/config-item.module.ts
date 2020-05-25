@@ -15,7 +15,8 @@ import { ConfigItemListPickerComponent } from './config-item-list-picker/config-
     exports: [
         ConfigItemListComponent,
         ConfigItemListPickerComponent
-    ]
+    ],
+    entryComponents: [ConfigItemListPickerComponent]
 })
 
 export class ConfigItemModule {}

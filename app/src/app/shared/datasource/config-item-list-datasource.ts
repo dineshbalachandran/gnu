@@ -8,7 +8,6 @@ import { ConfigItem } from '../model/config-item.model';
 const EXAMPLE_DATA: ConfigItem[] = [
   new ConfigItem('EOI', 'EOI1', '001', 'New'),
   new ConfigItem('Activity', 'ACT2', '002', 'Change')
-
 ];
 
 /**

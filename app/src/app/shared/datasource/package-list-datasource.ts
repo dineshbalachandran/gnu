@@ -2,13 +2,9 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
-import { Observable, of as observableOf, merge } from 'rxjs';
+import { Observable, of as observableOf, merge, Subscription } from 'rxjs';
 import { Package } from '../model/package.model';
 
-const EXAMPLE_DATA: Package[] = [
-  new Package(1, 'Hydrogen', new Date('12/2/2020'), 'Dinesh', 'CDE', 'Open'),
-  new Package(2, 'Oxygen', new Date('10/3/2020'), 'John', 'Test', 'Committed')
-];
 
 /**
  * Data source for the PackageList view. This class should
@@ -16,12 +12,15 @@ const EXAMPLE_DATA: Package[] = [
  * (including sorting, pagination, and filtering).
  */
 export class PackageListDataSource extends DataSource<Package> {
-  data: Package[] = EXAMPLE_DATA;
+  data: Package[] = [];
   paginator: MatPaginator;
   sort: MatSort;
 
-  constructor() {
+  subscription: Subscription;
+
+  constructor(private source: Observable<Package[]>) {
     super();
+    this.subscription = this.source.subscribe(packages => {this.data = packages;});
   }
 
   /**
@@ -29,11 +28,12 @@ export class PackageListDataSource extends DataSource<Package> {
    * the returned stream emits new items.
    * @returns A stream of the items to be rendered.
    */
-  connect(): Observable<Package[]> {
+  connect(): Observable<Package[]> {    
+
     // Combine everything that affects the rendered data into one update
     // stream for the data-table to consume.
     const dataMutations = [
-      observableOf(this.data),
+      this.source,
       this.paginator.page,
       this.sort.sortChange
     ];
@@ -47,7 +47,9 @@ export class PackageListDataSource extends DataSource<Package> {
    *  Called when the table is being destroyed. Use this function, to clean up
    * any open connections or free any held resources that were set up during connect.
    */
-  disconnect() {}
+  disconnect() {
+    this.subscription.unsubscribe();
+  }
 
   /**
    * Paginate the data (client-side). If you're using server-side pagination,
@@ -70,7 +72,8 @@ export class PackageListDataSource extends DataSource<Package> {
     return data.sort((a, b) => {
       const isAsc = this.sort.direction === 'asc';
       switch (this.sort.active) {
-        case 'committedOn': return compareDate(a.committedOn, b.committedOn, isAsc);
+        case 'createdOn' : return compare(a.createdOn, b.createdOn, isAsc);
+        case 'committedOn': return compare(a.committedOn, b.committedOn, isAsc);
         case 'no': return compare(a.no, b.no, isAsc);
         default: return 0;
       }
@@ -79,10 +82,6 @@ export class PackageListDataSource extends DataSource<Package> {
 }
 
 /** Simple sort comparator for example ID/Name columns (for client-side sorting). */
-function compare(a: string | number, b: string | number, isAsc: boolean) {
+function compare(a: string | number | Date, b: string | number | Date, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-}
-
-function compareDate(a: Date, b: Date, isAsc) {
-  return ( a < b ? -1: 1) * (isAsc ? 1 : -1);
 }
