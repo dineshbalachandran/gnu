@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { Package } from '../../../shared/model/package.model';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-package-create',
@@ -9,18 +8,17 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 })
 export class PackageCreateComponent implements OnInit {
 
-  data = {save: false, no: '', description: ''};
+  data = {no: '', description: ''};
 
   constructor(public dialogRef: MatDialogRef<PackageCreateComponent>) { }
 
   ngOnInit(): void {}
 
-  onSave() {
-    this.data.save = true;
+  onSave() {    
     this.dialogRef.close(this.data);
   }
 
   onCancel() {
-    this.dialogRef.close(this.data);
+    this.dialogRef.close();
   }
 }

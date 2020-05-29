@@ -1,10 +1,13 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ConfigItem } from '../../shared/model/config-item.model';
+import { MatSelectionList } from '@angular/material/list';
 
 
-export interface DialogData {
+export interface ConfigItemListPickerData {
   title: string;
   action: string;
+  items: ConfigItem[];
 }
 
 
@@ -15,11 +18,20 @@ export interface DialogData {
 })
 export class ConfigItemListPickerComponent implements OnInit {
 
-  typesOfShoes: string[] = ['Boots', 'Clogs', 'Loafers', 'Moccasins', 'Sneakers'];
+  @ViewChild('listItems') listItems: MatSelectionList;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+  constructor(
+    public dialogRef: MatDialogRef<ConfigItemListPickerComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ConfigItemListPickerData) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  onCancel() {
+    this.dialogRef.close();
+  }
+
+  onSave() {       
+    this.dialogRef.close(this.listItems.selectedOptions.selected);
   }
 
 }

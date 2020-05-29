@@ -2,12 +2,12 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
-import { Observable, of as observableOf, merge } from 'rxjs';
+import { Observable, of as observableOf, merge, Subscription } from 'rxjs';
 import { ConfigItem } from '../model/config-item.model';
 
 const EXAMPLE_DATA: ConfigItem[] = [
-  new ConfigItem('EOI', 'EOI1', '001', 'New'),
-  new ConfigItem('Activity', 'ACT2', '002', 'Change')
+  new ConfigItem('1', 'EOI', 'EOI1', '001', 'New'),
+  new ConfigItem('2', 'Activity', 'ACT2', '002', 'Change')
 ];
 
 /**
@@ -16,12 +16,15 @@ const EXAMPLE_DATA: ConfigItem[] = [
  * (including sorting, pagination, and filtering).
  */
 export class ConfigItemListDataSource extends DataSource<ConfigItem> {
-  data: ConfigItem[] = EXAMPLE_DATA;
+  data: ConfigItem[] = [];
   paginator: MatPaginator;
   sort: MatSort;
 
-  constructor() {
+  subscription: Subscription;
+
+  constructor(private source: Observable<{packedItems: ConfigItem[], unpackedItems: ConfigItem[]}>) {
     super();
+    this.subscription = this.source.subscribe(configItems => {this.data = [...configItems.packedItems];});    
   }
 
   /**
@@ -33,6 +36,7 @@ export class ConfigItemListDataSource extends DataSource<ConfigItem> {
     // Combine everything that affects the rendered data into one update
     // stream for the data-table to consume.
     const dataMutations = [
+      this.source,
       observableOf(this.data),
       this.paginator.page,
       this.sort.sortChange
@@ -47,7 +51,9 @@ export class ConfigItemListDataSource extends DataSource<ConfigItem> {
    *  Called when the table is being destroyed. Use this function, to clean up
    * any open connections or free any held resources that were set up during connect.
    */
-  disconnect() {}
+  disconnect() {
+    this.subscription.unsubscribe();
+  }
 
   /**
    * Paginate the data (client-side). If you're using server-side pagination,

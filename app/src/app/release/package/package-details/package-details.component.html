@@ -1,7 +1,7 @@
 <form [formGroup]="packageForm" novalidate (ngSubmit)="onSubmit()">
   <mat-card class="details-card">
     <mat-card-header>
-      <mat-card-title>{{no}}</mat-card-title>
+      <mat-card-title>{{packageNo}}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div class="row">
@@ -48,7 +48,7 @@
           </mat-form-field>
         </div>
       </div>
-      <div class="row">
+      <!-- <div class="row">
         <div class="col">
           <mat-label></mat-label>
         </div>
@@ -56,17 +56,19 @@
           <button mat-icon-button type="button" (click)="onRemove()"><mat-icon>remove_from_queue</mat-icon></button>
           <button mat-icon-button type="button" (click)="onAdd()"><mat-icon>add_to_queue</mat-icon></button>
         </div>
-      </div>
-      <app-config-item-list></app-config-item-list>      
+      </div> -->
+      <app-config-item-list [items]="{packedItems: packedItems, unpackedItems: unpackedItems}"
+        (itemsUpdated)="onItemsUpdated($event)">
+      </app-config-item-list>      
     </mat-card-content>
     <mat-card-actions>
       <div class="row">
         <div class="col">
-          <button mat-raised-button color="primary" type="button" disabled>Commit</button>
+          <button mat-button color="accent" type="button" (click)="onCommit()" *ngIf="!isCommitted">Commit</button>
         </div>
         <div class="col" style="text-align: right;">
-          <a mat-button (click)="onCancel()">Cancel</a>
-          <button mat-raised-button color="primary" type="submit">Save</button>
+          <a mat-button (click)="onCancel()">{{isCommitted ? 'Back' : 'Cancel'}}</a>
+          <button mat-raised-button color="primary" type="submit" *ngIf="!isCommitted">Save</button>
         </div>
       </div>            
     </mat-card-actions>

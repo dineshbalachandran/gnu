@@ -1,13 +1,13 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { PackageListDataSource} from '../../../shared/datasource/package-list-datasource';
 import { Package } from '../../../shared/model/package.model';
 import * as fromApp from '../../../store/app.reducer';
-import { MatDialog } from '@angular/material/dialog';
 import { PackageCreateComponent } from '../package-create/package-create.component';
 import * as PackageActions from '../store/package.actions';
 
@@ -41,12 +41,12 @@ export class PackageListComponent implements AfterViewInit, OnInit {
     let dialogRef = this.dialog.open(PackageCreateComponent);
     dialogRef.afterClosed()
       .subscribe(result => {
-        if (!result.save)
+        if (!result)
           return;
         //TODO: call savepackage instead of addpackage
         this.store.dispatch(
           PackageActions.addPackage(
-            {package: new Package(+result.no, result.description, new Date(), 'Test', null, '', 'CDE', 'Open')}
+            {package: new Package(result.no, result.description, new Date(), 'Test', null, '', 'CDE', 'Open')}
           )        
         );
       });

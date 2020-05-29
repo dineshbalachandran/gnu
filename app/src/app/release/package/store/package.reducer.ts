@@ -1,17 +1,44 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { Package } from 'src/app/shared/model/package.model';
+import { Package } from '../../../shared/model/package.model';
 import * as PackageActions from './package.actions';
+import { ConfigItem } from '../../../shared/model/config-item.model';
 
 export interface State {
-    packages : Package[];
+    packages: Package[];    
+    configItems: Map<string, ConfigItem[]>;
 }
 
 const initialState: State = {
     packages: [
-        new Package(1, 'Hydrogen', new Date('12/2/2020'), 'Dinesh', null, '', 'CDE', 'Open'),
-        new Package(2, 'Oxygen', new Date('10/3/2020'), 'John', new Date('11/4/2020'), 'Marcus', 'Test', 'Committed')
-    ]
+        new Package('1.0.0', 'Hydrogen', new Date('12/2/2020'), 'Dinesh', null, '', 'CDE', 'Open'),
+        new Package('2.0.0', 'Oxygen', new Date('10/3/2020'), 'John', new Date('11/4/2020'), 'Marcus', 'Test', 'Committed'),
+        new Package('3.0.0', 'Nitrogen', new Date('8/3/2020'), 'John', new Date('9/4/2020'), 'Sam', 'CDE', 'Committed')
+    ],
+    configItems: new Map([
+                        ['', [new ConfigItem('1', 'EOI', 'EOI1', '001', 'New')]],
+                        ['1.0.0', [new ConfigItem('2', 'ACT', 'ACT1', '001', 'Change')]]
+                    ])
 }
+
+function reAssignConfigItems(m: Map<string, ConfigItem[]>, packageNo: string, tobeCIs: ConfigItem[]) {
+
+    const asisCIs = m.get(packageNo);
+    
+    const asisCINos = new Set(asisCIs.map((ci, i) => ci.no));
+    const tobeCINos = new Set(tobeCIs.map((ci, i) => ci.no));
+
+    const removedCIs = asisCIs.filter((ci, i) => !tobeCINos.has(ci.no));
+    const addedCINos = new Set(tobeCIs.filter((ci, i) => !asisCINos.has(ci.no)).map((ci, i) => ci.no));
+
+    //filter the ones added to the package and add the ones removed from the package
+    const unassignedCIs = m.get('').filter((ci, i) => !addedCINos.has(ci.no)).concat(removedCIs);
+
+    m.set(packageNo, tobeCIs);
+    m.set('', unassignedCIs);
+
+    return m;
+}
+
 
 export function packageReducer(packageState: State | undefined, packageAction: Action) {
     return createReducer(
@@ -23,8 +50,18 @@ export function packageReducer(packageState: State | undefined, packageAction: A
         on(PackageActions.updatePackage, (state, action) => ( 
             {...state, 
                 packages: state.packages
-                        .map((_package, i) => _package.no === action.no ? {...action.package} : _package)
+                        .map((_package, i) => _package.no === action.package.no ? {...action.package} : _package)
             })
-        )
+        ),
+        on(PackageActions.setConfigItems, (state, action) => (
+            {...state,
+                configItems: new Map(state.configItems).set(action.packageNo, action.configItems)
+            })
+        ),
+        on(PackageActions.repackConfigItems, (state, action) => (
+            {...state,
+                configItems: reAssignConfigItems(new Map(state.configItems), action.packageNo, action.configItems)            
+            }
+        ))
     )(packageState, packageAction);    
 }

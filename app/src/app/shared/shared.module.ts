@@ -18,7 +18,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDialogModule }  from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatStepperModule } from '@angular/material/stepper';
-import { MatCheckboxModule } from '@angular/material/checkbox'
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 const MATERIAL_MODULES = [
   MatCardModule,

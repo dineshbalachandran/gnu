@@ -4,20 +4,20 @@
         <ng-template matStepLabel>Choose target environment</ng-template>
         <mat-form-field>
             <mat-label>Environment</mat-label>
-            <mat-select [(value)]="selected" formControlName="firstCtrl">
+            <mat-select [(value)]="targetEnv" formControlName="firstCtrl">
               <mat-option *ngFor="let environment of environments" [value]="environment">
                 {{environment}}
               </mat-option>
             </mat-select>
           </mat-form-field>
         <div>
-          <button mat-button type="primary" matStepperNext>Connect</button>
+          <button mat-button type="primary" matStepperNext (click)="onConnect()">Connect</button>
         </div>
       </form>
     </mat-step>
     <mat-step [stepControl]="secondFormGroup">
       <form [formGroup]="secondFormGroup">
-        <ng-template matStepLabel>Select package(s) to export</ng-template>
+        <ng-template matStepLabel>Select packages to export</ng-template>
         <div class="mat-elevation-z8">
           <table mat-table class="full-width-table" matSort aria-label="Elements">
 
@@ -71,15 +71,15 @@
         </div>
         <div>
           <button mat-button matStepperPrevious>Back</button>
-          <button mat-button type="primary" matStepperNext>Export</button>
+          <button mat-button type="primary" matStepperNext (click)="onExport()">Export</button>
         </div>
       </form>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>Confirmation</ng-template>
-      <p>Package(s) exported. Please check in target environment for migration completion status.</p>
+      <p>Package export initiated. Please check in the target environment for the progression status.</p>
       <div>        
-        <button mat-button type="primary" (click)="stepper.reset()">Close</button>
+        <button mat-button type="primary" (click)="onClose()">Close</button>
       </div>
     </mat-step>
   </mat-horizontal-stepper>

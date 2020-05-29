@@ -1,16 +1,16 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content>
-    <mat-selection-list #shoes>
-        <mat-list-option *ngFor="let shoe of typesOfShoes">
-        {{shoe}}
+    <mat-selection-list #listItems>
+        <mat-list-option *ngFor="let ci of data.items" [value]="ci.no">
+        {{ci.entity + ' ' + ci.entityKey + ' ' + ci.version + ' ' + ci.change}}
         </mat-list-option>
     </mat-selection-list>
     
     <p>
-    Options selected: {{shoes.selectedOptions.selected.length}}
+    Options selected: {{listItems.selectedOptions.selected.length}}
     </p>
 </div>
 <div mat-dialog-actions>
-<a mat-button mat-dialog-close>Cancel</a>
-<button mat-button color="primary" mat-dialog-close>{{data.action}}</button>
+<a mat-button (click)="onCancel()">Cancel</a>
+<button mat-button color="primary" (click)="onSave()" [disabled]="listItems.selectedOptions.selected.length === 0">{{data.action}}</button>
 </div>

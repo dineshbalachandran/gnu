@@ -1,4 +1,13 @@
   <div class="mat-elevation-z8">
+    <div class="row">
+      <div class="col">
+        <mat-label></mat-label>
+      </div>
+      <div class="col" style="text-align: right;">
+        <button mat-icon-button type="button" (click)="onRemove()"><mat-icon>remove_from_queue</mat-icon></button>
+        <button mat-icon-button type="button" (click)="onAdd()"><mat-icon>add_to_queue</mat-icon></button>
+      </div>
+    </div>
     <table mat-table class="full-width-table" matSort aria-label="Elements">
     
       <ng-container matColumnDef="entity">
@@ -28,7 +37,7 @@
     <mat-paginator #paginator
         [length]="dataSource?.data.length"
         [pageIndex]="0"
-        [pageSize]="50"
+        [pageSize]="25"
         [pageSizeOptions]="[25, 50, 100, 250]">
     </mat-paginator>
 </div>

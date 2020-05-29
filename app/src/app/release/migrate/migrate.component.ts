@@ -5,11 +5,10 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Store } from '@ngrx/store';
-import { map } from 'rxjs/operators';
 import { Package } from '../../shared/model/package.model';
 import { PackageListDataSource } from '../../shared/datasource/package-list-datasource';
-import * as fromApp from '../../store/app.reducer';
+
+import { MigrateService } from './migrate.service';
 
 @Component({
   selector: 'app-migrate',
@@ -19,13 +18,14 @@ import * as fromApp from '../../store/app.reducer';
 export class MigrateComponent implements AfterViewInit, OnInit {
 
   environments = ['SIT', 'PROD'];
-
-  selected = 'SIT';
+  targetEnv = 'SIT';
+  
   firstFormGroup: FormGroup;
-
   secondFormGroup: FormGroup;
+  
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['select', 'no', 'description', 'committedOn', 'committedBy'];
+  
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatTable) table: MatTable<Package>;
@@ -36,27 +36,21 @@ export class MigrateComponent implements AfterViewInit, OnInit {
   constructor(private _formBuilder: FormBuilder, 
     private router: Router,
     private route: ActivatedRoute,
-    private store: Store<fromApp.State>) { }
+    private migrateService: MigrateService) {}
   
-  
-  ngAfterViewInit(): void {
+  ngAfterViewInit() {    
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;
+    this.table.dataSource = this.dataSource;    
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.firstFormGroup = this._formBuilder.group({
       firstCtrl: ['', Validators.required]
     });
     this.secondFormGroup = this._formBuilder.group({
     });
-    this.dataSource = new PackageListDataSource(this.store.select('migrate').pipe(map(migrateState => migrateState.packages)));
-  }
-
-
-  onClose() {
-    this.router.navigate(['../'],{relativeTo: this.route});
+    this.dataSource = new PackageListDataSource(this.migrateService.packagesUpdated);    
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
@@ -79,5 +73,24 @@ export class MigrateComponent implements AfterViewInit, OnInit {
       return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
     }
     return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.no + 1}`;
+  }
+
+  onConnect() {
+    this.migrateService.fetchPackagesForExport(this.targetEnv);
+  }
+
+  onExport() {
+    
+    let packages : Package[] = [];
+    this.dataSource.data.forEach(_package => {
+      if (this.selection.isSelected(_package)) 
+        packages.push(_package);
+    });
+    
+    this.migrateService.exportPackages(packages);
+  }
+
+  onClose() {
+    this.router.navigate(['../package'],{relativeTo: this.route});
   }
 }
