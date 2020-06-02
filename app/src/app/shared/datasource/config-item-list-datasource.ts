@@ -6,8 +6,8 @@ import { Observable, of as observableOf, merge, Subscription } from 'rxjs';
 import { ConfigItem } from '../model/config-item.model';
 
 const EXAMPLE_DATA: ConfigItem[] = [
-  new ConfigItem('1', 'EOI', 'EOI1', '001', 'New'),
-  new ConfigItem('2', 'Activity', 'ACT2', '002', 'Change')
+  new ConfigItem(1, 'EOI', 'EOI1', '001', 'New'),
+  new ConfigItem(2, 'Activity', 'ACT2', '002', 'Change')
 ];
 
 /**

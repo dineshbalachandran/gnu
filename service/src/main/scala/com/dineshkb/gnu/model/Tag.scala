@@ -18,9 +18,6 @@ class Tag {
   @Column(name = "description")
   var description: String = _
   @BeanProperty
-  @Column(name = "status")
-  var status: String = "open"
-  @BeanProperty
   @Column(name = "updated_at")
   var updatedAt: java.time.LocalDateTime = java.time.LocalDateTime.now()
 }

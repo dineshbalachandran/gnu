@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
 <div mat-dialog-content>
     <mat-selection-list #listItems>
-        <mat-list-option *ngFor="let ci of data.items" [value]="ci.no">
+        <mat-list-option *ngFor="let ci of data.items" [value]="ci.id">
         {{ci.entity + ' ' + ci.entityKey + ' ' + ci.version + ' ' + ci.change}}
         </mat-list-option>
     </mat-selection-list>

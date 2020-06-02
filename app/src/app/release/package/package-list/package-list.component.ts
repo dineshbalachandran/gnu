@@ -6,10 +6,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs/operators';
 import { PackageListDataSource} from '../../../shared/datasource/package-list-datasource';
-import { Package } from '../../../shared/model/package.model';
+import { Package, PackageStatus } from '../../../shared/model/package.model';
 import * as fromApp from '../../../store/app.reducer';
 import { PackageCreateComponent } from '../package-create/package-create.component';
 import * as PackageActions from '../store/package.actions';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-package-list',
@@ -23,12 +24,16 @@ export class PackageListComponent implements AfterViewInit, OnInit {
   dataSource: PackageListDataSource;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['no', 'description', 'createdOn', 'createdBy', 'committedOn', 'committedBy', 'source', 'status'];
+  displayedColumns = ['no', 'description', 'createdOn', 'createdBy', 
+      'committedOn', 'committedBy', 'source', 'status'];
 
   constructor(private store: Store<fromApp.State>, private dialog: MatDialog) {}
 
   ngOnInit() {
-    this.dataSource = new PackageListDataSource(this.store.select('package').pipe(map(packageState => packageState.packages)));
+    this.store.dispatch(PackageActions.fetchPackages({env: environment.env}));
+    this.dataSource = new PackageListDataSource(
+      this.store.select('package').pipe(map(packageState => packageState.packages))
+    );
   }
 
   ngAfterViewInit() {
@@ -43,10 +48,12 @@ export class PackageListComponent implements AfterViewInit, OnInit {
       .subscribe(result => {
         if (!result)
           return;
-        //TODO: call savepackage instead of addpackage
         this.store.dispatch(
-          PackageActions.addPackage(
-            {package: new Package(result.no, result.description, new Date(), 'Test', null, '', 'CDE', 'Open')}
+          PackageActions.saveNewPackage(
+            {package: new Package(
+                -1, result.no, result.description, new Date(), 'Test', 
+                null, '', environment.env, PackageStatus.OPEN)
+            }
           )        
         );
       });

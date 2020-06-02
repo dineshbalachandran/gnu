@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 class ReleasePackageAssembler extends SimpleRepresentationModelAssembler[ReleasePackage] {
 
   override def addLinks(resource: EntityModel[ReleasePackage]): Unit = {
-    resource.add(linkTo(methodOn(classOf[ReleasePackageController]).getPackage(resource.getContent.no)).withRel("self"))
+    resource.add(linkTo(methodOn(classOf[ReleasePackageController]).getPackage(resource.getContent.id)).withRel("self"))
     resource.add(linkTo(methodOn(classOf[TagController]).getTag(resource.getContent.tag.no)).withRel("tag"))
     resource.add(linkTo(methodOn(classOf[TagController]).getItemsWithTag(resource.getContent.tag.no)).withRel("configurationitems"))
   }

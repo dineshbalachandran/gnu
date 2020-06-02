@@ -18,8 +18,8 @@ class TagController(val tagService: TagService,
                     val tagResourceAssembler: TagResourceAssembler) {
 
   @GetMapping(path = Array("/tags"))
-  def getTags(@RequestParam(required = false) status: String): ResponseEntity[CollectionModel[EntityModel[Tag]]] = {
-    new ResponseEntity(tagResourceAssembler.toCollectionModel(tagService.getTags(status)), HttpStatus.OK)
+  def getTags(): ResponseEntity[CollectionModel[EntityModel[Tag]]] = {
+    new ResponseEntity(tagResourceAssembler.toCollectionModel(tagService.getTags()), HttpStatus.OK)
   }
 
   @GetMapping(path = Array("/tags/{tagNo}"))

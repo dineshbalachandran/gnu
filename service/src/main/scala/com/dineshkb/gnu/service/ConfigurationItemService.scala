@@ -26,7 +26,7 @@ class ConfigurationItemService(private val itemRepository: ConfigurationItemRepo
 
     //TODO: validation to check if all configuration items are present
     val cItems = getItems(pair.keySet)
-    cItems.forEach(cItem => cItem.tag = tags.get(pair.get(cItem.no)))
+    cItems.forEach(cItem => cItem.tag = tags.get(pair.get(cItem.id)))
     updateItems(cItems)
   }
 

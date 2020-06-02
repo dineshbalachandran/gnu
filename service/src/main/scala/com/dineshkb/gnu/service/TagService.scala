@@ -9,11 +9,7 @@ import org.springframework.stereotype.Service
 @Service
 class TagService( private val tagRepository: TagRepository) {
 
-   def getTags(status: String): java.lang.Iterable[Tag] =
-     status match {
-       case null => tagRepository.findAll()
-       case _ => tagRepository.findAllByStatus(status)
-     }
+  def getTags(): java.lang.Iterable[Tag] = tagRepository.findAll()
 
   def getTags(tagNos: java.lang.Iterable[String]) : java.lang.Iterable[Tag] = tagRepository.findAllById(tagNos)
 

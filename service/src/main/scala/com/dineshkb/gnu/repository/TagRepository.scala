@@ -5,6 +5,4 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-trait TagRepository extends CrudRepository[Tag, java.lang.String] {
-  def findAllByStatus(status: String) : java.lang.Iterable[Tag]
-}
+trait TagRepository extends CrudRepository[Tag, java.lang.String] {}

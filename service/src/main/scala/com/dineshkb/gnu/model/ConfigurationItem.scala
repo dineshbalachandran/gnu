@@ -12,14 +12,14 @@ class ConfigurationItem {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @BeanProperty
-  @Column(name = "no")
-  var no: java.lang.Long = _
+  @Column(name = "id")
+  var id: java.lang.Long = _
   @BeanProperty
   @Column(name = "entity")
   var entity: String = _
   @BeanProperty
-  @Column(name = "entity_key")
-  var entity_key: String = _
+  @Column(name = "entityKey")
+  var entityKey: String = _
   @BeanProperty
   @Column(name = "version_no")
   var versionNo: String = _

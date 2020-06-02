@@ -5,8 +5,8 @@ import { ConfigItem } from '../../../shared/model/config-item.model';
 export const fetchPackages = createAction('[Packages] Fetch Packages', props<{env: string}>());
 export const setPackages = createAction('[Packages] Set Packages', props<{packages: Package[]}>());
 export const updatePackage = createAction('[Packages] Update Package', props<{package: Package}>());
-export const savePackage = createAction('[Packages] Save Package', props<{package: Package}>());
-export const addPackage = createAction('[Packages] Add Package', props<{package: Package}>());
+export const saveNewPackage = createAction('[Packages] Save New Package', props<{package: Package}>());
+export const createPackage = createAction('[Packages] Create Package', props<{package: Package}>());
 
 export const fetchConfigItems = createAction('[Packages] Fetch Config Items', props<{packageNo: string}>());
 export const setConfigItems = createAction('[Packages] Set Config Items', props<{packageNo: string, configItems: ConfigItem[]}>());

@@ -19,21 +19,30 @@ import org.springframework.web.server.ResponseStatusException
 class ReleasePackageController(val releasePackageService: ReleasePackageService,
                                val releasePackageAssembler: ReleasePackageAssembler,
                                val configurationItemService: ConfigurationItemService) {
+
   @GetMapping(path = Array("/releasepackages"))
   def getPackages(): ResponseEntity[CollectionModel[EntityModel[ReleasePackage]]] =
     new ResponseEntity(releasePackageAssembler.toCollectionModel(releasePackageService.getPackages) , HttpStatus.OK)
 
-  @GetMapping(path = Array("/releasepackages/{packageNo}"))
-  def getPackage(@PathVariable packageNo: lang.Long): ResponseEntity[EntityModel[ReleasePackage]] = {
-    val releasePackage = releasePackageService.getPackage(packageNo)
+  @GetMapping(path = Array("/releasepackages/{id}"))
+  def getPackage(@PathVariable id: lang.Long): ResponseEntity[EntityModel[ReleasePackage]] = {
+    val releasePackage = releasePackageService.getPackage(id)
              .orElseThrow (() =>
-              new ResponseStatusException(HttpStatus.NOT_FOUND, "%s package not found".format(packageNo)))
+              new ResponseStatusException(HttpStatus.NOT_FOUND, "%s package not found".format(id)))
     new ResponseEntity(releasePackageAssembler.toModel(releasePackage), HttpStatus.OK)
   }
 
   @PostMapping(path = Array("/releasepackages"))
-  def createPackage(@Valid @RequestBody releasePackage: ReleasePackage): ResponseEntity[lang.Long] = {
-      new ResponseEntity(releasePackageService.createPackage(releasePackage), HttpStatus.CREATED)
+  def createPackage(@Valid @RequestBody releasePackage: ReleasePackage): ResponseEntity[EntityModel[ReleasePackage]] = {
+      releasePackage.id = null
+      new ResponseEntity(releasePackageAssembler.toModel(releasePackageService.createPackage(releasePackage)),
+          HttpStatus.CREATED)
+  }
+
+  @PutMapping(path = Array("/releasepackages/{id}"))
+  def updatePackage(@Valid @RequestBody releasePackage: ReleasePackage): ResponseEntity[EntityModel[ReleasePackage]] = {
+    new ResponseEntity(releasePackageAssembler.toModel(releasePackageService.updatePackage(releasePackage)),
+        HttpStatus.OK)
   }
 
   @PostMapping(path = Array("/releasepackages/import"))
@@ -50,7 +59,7 @@ class ReleasePackageController(val releasePackageService: ReleasePackageService,
     val cItems = configurationItemService.getItemsWithTag(releasePackage.tag.no)
     val importDTO = new ReleasePackageImportDTO
     importDTO.releasePackage = releasePackage
-    importDTO.releasePackage.no = null
+    importDTO.releasePackage.id = null
     importDTO.cItems = cItems
 
     val restTemplate = new RestTemplate()

@@ -17,6 +17,6 @@ class TagResourceAssembler extends SimpleRepresentationModelAssembler[Tag] {
   }
 
   override def addLinks(resources: CollectionModel[EntityModel[Tag]]): Unit = {
-    resources.add(linkTo(methodOn(classOf[TagController]).getTags(null)).withRel("self"))
+    resources.add(linkTo(methodOn(classOf[TagController]).getTags()).withRel("self"))
   }
 }

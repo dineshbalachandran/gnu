@@ -1,6 +1,6 @@
 export class ConfigItem {
     constructor (
-        public no: string,
+        public id: number,
         public entity: string,
         public entityKey : string,
         public version: string,

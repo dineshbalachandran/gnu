@@ -58,7 +58,7 @@ export class ConfigItemListComponent implements AfterViewInit, OnInit {
       if (!selectedItems)
         return;
       [this.updatedItems.unpackedItems, this.updatedItems.packedItems] =
-            this.exchangeItems(new Set(selectedItems.map((i, _) => i.value)), 
+            this.exchangeItems(new Set(selectedItems.map((item, index) => item.value)), 
                           this.updatedItems.unpackedItems, 
                           this.updatedItems.packedItems);
       this.itemsUpdated.emit(this.updatedItems);
@@ -84,11 +84,11 @@ export class ConfigItemListComponent implements AfterViewInit, OnInit {
     });
   }
 
-  private exchangeItems(ciNos: Set<string>, from: ConfigItem[], to: ConfigItem[]) {
+  private exchangeItems(ciIDs: Set<number>, from: ConfigItem[], to: ConfigItem[]) {
     
-    let move = from.filter((ci, index) => ciNos.has(ci.no));
+    let move = from.filter((ci, index) => ciIDs.has(ci.id));
     let updatedTo = to.concat(...move);
-    let updatedFrom = from.filter((ci, index) => !ciNos.has(ci.no))
+    let updatedFrom = from.filter((ci, index) => !ciIDs.has(ci.id))
     
     return [updatedFrom, updatedTo];
   }

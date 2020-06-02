@@ -33,6 +33,7 @@ export class PackageListDataSource extends DataSource<Package> {
     // Combine everything that affects the rendered data into one update
     // stream for the data-table to consume.
     const dataMutations = [
+      observableOf(this.data),
       this.source,
       this.paginator.page,
       this.sort.sortChange
