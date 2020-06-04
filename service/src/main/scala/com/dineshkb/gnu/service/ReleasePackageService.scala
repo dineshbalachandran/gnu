@@ -1,12 +1,14 @@
 package com.dineshkb.gnu.service
 
-import java.lang
 import java.util.Optional
 
 import com.dineshkb.gnu.model.{ConfigurationItem, ReleasePackage, Tag}
 import com.dineshkb.gnu.repository.ReleasePackageRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
+import scala.collection.JavaConverters._
+import scala.collection.mutable.ListBuffer
 
 @Service
 @Transactional
@@ -33,6 +35,7 @@ class ReleasePackageService( val releasePackageRepository: ReleasePackageReposit
     tagService.saveTag(tag)
 
     releasePackage.tag = tag
+    releasePackage.id = null
     releasePackageRepository.save(releasePackage)
     releasePackage
   }
@@ -45,10 +48,22 @@ class ReleasePackageService( val releasePackageRepository: ReleasePackageReposit
     releasePackage
   }
 
-  def importPackage(releasePackage: ReleasePackage, cItems: java.lang.Iterable[ConfigurationItem]): lang.Long = {
-    tagService.saveTag(releasePackage.tag)
-    releasePackageRepository.save(releasePackage)
-    itemsService.updateItems(cItems)
-    releasePackage.id
+  def importPackages(releasePackages: java.lang.Iterable[ReleasePackage]): java.lang.Iterable[ReleasePackage] = {
+    var importedPackages = ListBuffer[ReleasePackage]()
+
+    releasePackages.forEach(releasePackage => {
+      releasePackage.status = "Importing"
+      importedPackages += createPackage(releasePackage)
+    })
+
+    importedPackages.asJava
+  }
+
+  def rePack(no: String, configItemIds: java.lang.Iterable[java.lang.Long]): java.lang.Iterable[ConfigurationItem] = {
+    var currentItemIds = ListBuffer[java.lang.Long]()
+    itemsService.getItemsWithTag(no).forEach(item => currentItemIds += item.id)
+
+    itemsService.updateTagNo("0.0.0", currentItemIds.asJava)
+    itemsService.updateTagNo(no, configItemIds)
   }
 }

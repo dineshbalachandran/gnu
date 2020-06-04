@@ -1,8 +1,8 @@
 package com.dineshkb.gnu.service
 
-import java.{lang, util}
+import java.lang
 
-import com.dineshkb.gnu.model.{ConfigurationItem, Tag}
+import com.dineshkb.gnu.model.ConfigurationItem
 import com.dineshkb.gnu.repository.ConfigurationItemRepository
 import org.springframework.stereotype.Service
 
@@ -16,25 +16,16 @@ class ConfigurationItemService(private val itemRepository: ConfigurationItemRepo
 
   def updateItems(items: lang.Iterable[ConfigurationItem]): lang.Iterable[ConfigurationItem] = itemRepository.saveAll(items)
 
-  def updateTagNo(pair: util.Map[lang.Long, String]) : lang.Iterable[ConfigurationItem] = {
-    val tagNos = new util.HashSet[String](pair.values)
-    val tags  = getTags(tagNos)
+  def updateTagNo(tagNo: String, itemIds: lang.Iterable[lang.Long]) : lang.Iterable[ConfigurationItem] = {
 
     //TODO: introduce specific exception classes
-    if (!tags.keySet.containsAll(tagNos))
-      throw new Exception("Some tag nos not valid. Tag nos provided: %s, tag nos available: %s".format(tags.keySet, tagNos))
+    val tag = tagService.getTag(tagNo).orElseThrow(() =>
+        throw new Exception("Tag no provided %s is not present.".format(tagNo)))
 
     //TODO: validation to check if all configuration items are present
-    val cItems = getItems(pair.keySet)
-    cItems.forEach(cItem => cItem.tag = tags.get(pair.get(cItem.id)))
+    val cItems = getItems(itemIds)
+    cItems.forEach(cItem => cItem.tag = tag)
     updateItems(cItems)
   }
 
-  private def getTags(tagNos: util.Set[String]): util.Map[String, Tag] = {
-    val tags = new util.HashMap[String, Tag]
-    tagService.getTags(tagNos).forEach(tag => {
-      tags.put(tag.no, tag)
-    })
-    tags
-  }
 }

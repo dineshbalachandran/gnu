@@ -1,10 +1,8 @@
 package com.dineshkb.gnu.controller
 
-import java.lang
-
 import com.dineshkb.gnu.assembler.TagResourceAssembler
-import com.dineshkb.gnu.model.{ConfigurationItem, Tag}
-import com.dineshkb.gnu.service.{ConfigurationItemService, TagService}
+import com.dineshkb.gnu.model.Tag
+import com.dineshkb.gnu.service.TagService
 import javax.validation.Valid
 import org.springframework.hateoas.{CollectionModel, EntityModel}
 import org.springframework.http.{HttpStatus, ResponseEntity}
@@ -14,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 @RequestMapping(path = Array("/api"))
 class TagController(val tagService: TagService,
-                    val itemService: ConfigurationItemService,
                     val tagResourceAssembler: TagResourceAssembler) {
 
   @GetMapping(path = Array("/tags"))
@@ -44,13 +41,4 @@ class TagController(val tagService: TagService,
       new ResponseEntity(tagService.saveTag(tag), HttpStatus.OK)
   }
 
-  @GetMapping(path = Array("/tags/{tagNo}/configurationitems"))
-  def getItemsWithTag(@PathVariable tagNo: lang.String): ResponseEntity[lang.Iterable[ConfigurationItem]] =
-    new ResponseEntity(itemService.getItemsWithTag(tagNo), HttpStatus.OK)
-
-  @PatchMapping(path = Array("/tags/{tagNo}/configurationitems"))
-  def updateTagNo(@PathVariable tagNo: lang.String,
-                  @Valid @RequestBody pair: java.util.Map[java.lang.Long, String]): ResponseEntity[lang.Iterable[ConfigurationItem]] = {
-    new ResponseEntity(itemService.updateTagNo(pair), HttpStatus.OK)
-  }
 }
