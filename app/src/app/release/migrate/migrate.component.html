@@ -77,7 +77,7 @@
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>Confirmation</ng-template>
-      <p>Package export initiated. Please check in the target environment for the progression status.</p>
+      <p>{{exportMessage}}</p>
       <div>        
         <button mat-button type="primary" (click)="onClose()">Close</button>
       </div>

@@ -20,3 +20,7 @@ export class Package {
         public source: string, 
         public status: string) {}
 }
+
+export function isPackageMutable(p: Package) {
+    return p.status === 'Open';
+}

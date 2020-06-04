@@ -30,7 +30,7 @@ export class PackageListComponent implements AfterViewInit, OnInit {
   constructor(private store: Store<fromApp.State>, private dialog: MatDialog) {}
 
   ngOnInit() {
-    this.store.dispatch(PackageActions.fetchPackages({env: environment.env}));
+    
     this.dataSource = new PackageListDataSource(
       this.store.select('package').pipe(map(packageState => packageState.packages))
     );

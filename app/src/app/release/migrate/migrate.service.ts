@@ -1,19 +1,30 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Package } from '../../shared/model/package.model';
+import { Package, PackageStatus } from '../../shared/model/package.model';
+import { PackageDataService } from '../../shared/dataservice/package-data.service';
+import { Store } from '@ngrx/store';
+import * as fromApp from '../../store/app.reducer';
+import { withLatestFrom, map } from 'rxjs/operators';
 
 @Injectable({providedIn: 'root'})
 export class MigrateService {
     
     packagesUpdated = new Subject<Package[]>();
+    exportedPackages : Package[] = [];
 
-    constructor() {}
+    constructor(private packageDataService: PackageDataService, private store: Store<fromApp.State>) {}
 
     fetchPackagesForExport(targetEnv: string) {
-        this.packagesUpdated.next([new Package(2, '2.0.0', 'Oxygen', new Date('10/3/2020'), 'John', new Date('11/4/2020'), 'Marcus', 'Test', 'Committed')]);
+        this.packageDataService.fetchPackages(targetEnv).pipe(
+            withLatestFrom(this.store.select('package').pipe(map(packageState => packageState.packages))),
+            map(([targetPackages, sourcePackages]) => {
+                let targetCommitted = new Set(targetPackages.filter(p => p.status === PackageStatus.COMMITTED).map(p => p.no));
+                return sourcePackages.filter(p => p.status === PackageStatus.COMMITTED && !targetCommitted.has(p.no));                
+            })
+        ).subscribe((packages => this.packagesUpdated.next(packages)));
     }
 
-    exportPackages(packages: Package[]) {
-        console.log(packages);
+    exportPackages(targetEnv:string, packages: Package[]) {
+        return this.packageDataService.exportPackages(targetEnv, packages);
     }
 }

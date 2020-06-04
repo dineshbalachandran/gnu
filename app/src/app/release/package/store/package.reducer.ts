@@ -1,5 +1,5 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { Package } from '../../../shared/model/package.model';
+import { Package, unpackedPackageNo } from '../../../shared/model/package.model';
 import * as PackageActions from './package.actions';
 import { ConfigItem } from '../../../shared/model/config-item.model';
 
@@ -15,15 +15,18 @@ const initialState: State = {
     //     new Package(3, '3.0.0', 'Nitrogen', new Date('8/3/2020'), 'John', new Date('9/4/2020'), 'Sam', 'CDE', 'Committed')
     // ],
     packages: [],
-    configItems: new Map([
-                        ['', [new ConfigItem(1, 'EOI', 'EOI1', '001', 'New')]],
-                        ['1.0.0', [new ConfigItem(2, 'ACT', 'ACT1', '001', 'Change')]]
-                    ])
+    // configItems: new Map([
+    //                     [unpackedPackageNo, [new ConfigItem(1, 'EOI', 'EOI1', '001', 'New')]],
+    //                     ['1.0.0', [new ConfigItem(2, 'ACT', 'ACT1', '001', 'Change')]]
+    //                 ])
+    configItems: new Map<string, ConfigItem[]>([
+            [unpackedPackageNo, []]
+        ])
 }
 
 function reAssignConfigItems(m: Map<string, ConfigItem[]>, packageNo: string, tobeCIs: ConfigItem[]) {
 
-    const asisCIs = m.get(packageNo);
+    const asisCIs = m.get(packageNo) ? m.get(packageNo) : [];
     
     const asisCINos = new Set(asisCIs.map((ci, i) => ci.id));
     const tobeCINos = new Set(tobeCIs.map((ci, i) => ci.id));
@@ -32,10 +35,10 @@ function reAssignConfigItems(m: Map<string, ConfigItem[]>, packageNo: string, to
     const addedCINos = new Set(tobeCIs.filter((ci, i) => !asisCINos.has(ci.id)).map((ci, i) => ci.id));
 
     //filter the ones added to the package and add the ones removed from the package
-    const unassignedCIs = m.get('').filter((ci, i) => !addedCINos.has(ci.id)).concat(removedCIs);
+    const unassignedCIs = m.get(unpackedPackageNo).filter((ci, i) => !addedCINos.has(ci.id)).concat(removedCIs);
 
     m.set(packageNo, tobeCIs);
-    m.set('', unassignedCIs);
+    m.set(unpackedPackageNo, unassignedCIs);
 
     return m;
 }
@@ -59,7 +62,7 @@ export function packageReducer(packageState: State | undefined, packageAction: A
                 configItems: new Map(state.configItems).set(action.packageNo, action.configItems)
             })
         ),
-        on(PackageActions.repackConfigItems, (state, action) => (
+        on(PackageActions.repackPackage, (state, action) => (
             {...state,
                 configItems: reAssignConfigItems(new Map(state.configItems), action.packageNo, action.configItems)            
             }

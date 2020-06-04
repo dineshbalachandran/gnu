@@ -7,7 +7,6 @@ import { MatTable } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Package } from '../../shared/model/package.model';
 import { PackageListDataSource } from '../../shared/datasource/package-list-datasource';
-
 import { MigrateService } from './migrate.service';
 
 @Component({
@@ -19,6 +18,7 @@ export class MigrateComponent implements AfterViewInit, OnInit {
 
   environments = ['SIT', 'PROD'];
   targetEnv = 'SIT';
+  exportMessage = '';
   
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
@@ -87,7 +87,10 @@ export class MigrateComponent implements AfterViewInit, OnInit {
         packages.push(_package);
     });
     
-    this.migrateService.exportPackages(packages);
+    this.migrateService.exportPackages(this.targetEnv, packages).subscribe(exported => {
+      this.exportMessage = 'Export initiated for ' + exported.length + 
+          ' packages. Please check target environment for progression status.';
+    });
   }
 
   onClose() {

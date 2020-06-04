@@ -1,72 +1,21 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Store } from '@ngrx/store';
-import { Actions, Effect, createEffect, ofType } from '@ngrx/effects';
-import * as fromApp from '../../../store/app.reducer';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as PackageActions from './package.actions';
-import { switchMap, map, mergeMap } from 'rxjs/operators';
+import { switchMap, map} from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
-import { Package } from 'src/app/shared/model/package.model';
-
-interface PackageData {
-    id: number,
-    description: string,
-    source: string,
-    status: string,
-    createdOn: Date,
-    createdBy: string,
-    committedOn: Date,
-    committedBy: string,
-    tag : {
-        no: string,
-        description: string
-    },
-    _links: {
-        self : {
-            href: string
-        }
-    }
-}
-
-interface PackageListData {
-    _embedded : {
-        releasePackageList : PackageData[]
-    },
-    _links : {
-        self : {
-            href: string
-        }
-    }
-}
-
-const httpOptions = {
-    headers: new HttpHeaders( {
-                'Authorization' : 'Basic dXNlcjpwYXNzd29yZA=='
-            })
-};
+import { PackageDataService } from '../../../shared/dataservice/package-data.service';
+import { ConfigItemDataService } from '../../../shared/dataservice/config-item-data.service';
 
 @Injectable()
 export class PackageEffects {
-    constructor(private actions$: Actions, private http: HttpClient) {}
+    constructor(private actions$: Actions, 
+        private packageDataService: PackageDataService,
+        private configItemDataService: ConfigItemDataService) {}
 
     fetchPackages = createEffect(() => 
         this.actions$.pipe(
             ofType(PackageActions.fetchPackages),
-            switchMap(action => {                
-                const url = environment[action.env + '_host'] + 'api/releasepackages';
-                return this.http.get<PackageListData>(url, httpOptions);
-            }),
-            map(data => {
-                console.log(data);
-                return data._embedded != null ? 
-                    data._embedded.releasePackageList.map(p => {
-                        return new Package(
-                            p.id, p.tag.no, p.description, 
-                            p.createdOn, p.createdBy, p.committedOn, p.committedBy,
-                            p.source, p.status);                    
-                    }) :                    
-                    [];
-            }),
+            switchMap(() => this.packageDataService.fetchPackages(environment.env)),
             map(packages => { return PackageActions.setPackages({packages}); })        
     ));
 
@@ -74,18 +23,32 @@ export class PackageEffects {
         this.actions$.pipe(
             ofType(PackageActions.saveNewPackage),
             switchMap(action => {
-                const url = environment[environment.env + '_host'] + 'api/releasepackages';
-                const packagedata = {...action.package, tag: {no: action.package.no}};
-                console.log(packagedata);
-                return this.http.post<PackageData>(url, packagedata, httpOptions);
-            }),
-            map(data => {
-                console.log(data);
-                return new Package(
-                    data.id, data.tag.no, data.description,
-                    data.createdOn, data.createdBy, data.committedOn, data.committedBy,
-                    data.source, data.status);
+                return this.packageDataService.saveNewPackage(action.package);
             }),
             map(_package => { return PackageActions.createPackage({package: _package}); })
     ));
+
+    savePackage = createEffect(() => 
+        this.actions$.pipe(
+            ofType(PackageActions.savePackage),
+            switchMap(action => {
+                return this.packageDataService.savePackage(action.package);
+            }),
+            map(_package => { return PackageActions.updatePackage({package: _package}); })        
+    ));
+
+    fetchConfigItems = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PackageActions.fetchConfigItems),
+            switchMap(action => this.configItemDataService.fetchConfigItems(action.packageNo)),
+            map(data => { return PackageActions.setConfigItems({packageNo: data.no, configItems: data.configItems}); })
+    ));
+
+    saveRepackedConfigItems = createEffect(() =>
+        this.actions$.pipe(
+            ofType(PackageActions.saveRepackedPackage),
+            switchMap(action => this.packageDataService.saveRepackedPackage(action.packageNo, action.configItems)),
+            map(data => { return PackageActions.repackPackage({packageNo: data.no, configItems: data.configItems}); })
+    ));
+
 }
