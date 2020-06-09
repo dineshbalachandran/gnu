@@ -19,6 +19,7 @@ import { MatDialogModule }  from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const MATERIAL_MODULES = [
   MatCardModule,
@@ -38,7 +39,8 @@ const MATERIAL_MODULES = [
   MatDialogModule,
   MatListModule,
   MatStepperModule,
-  MatCheckboxModule 
+  MatCheckboxModule,
+  MatProgressSpinnerModule
 ];
 
 const CDK_MODULES = [

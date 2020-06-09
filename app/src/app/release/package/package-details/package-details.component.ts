@@ -16,41 +16,41 @@ import { isNullOrUndefined } from 'util';
   styleUrls: ['./package-details.component.scss']
 })
 export class PackageDetailsComponent implements OnInit, OnDestroy {
-  
+
   isLoading = true;
   packageForm: FormGroup;
-  
-  private storeSub: Subscription;  
+
+  private storeSub: Subscription;
 
   itemsUpdated = false;
   packageNo: string;
-  
+
   _package: Package;
   packedItems: ConfigItem[] = [];
   unpackedItems: ConfigItem[] = [];
   isMutable = false;
 
-  constructor(private fb: FormBuilder, 
-    private route: ActivatedRoute, 
-    private router: Router,    
+  constructor(private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private router: Router,
     private store: Store<fromApp.State>) {}
 
   ngOnInit() {
     this.route.params
       .subscribe(
-        (params: Params) => {          
+        (params: Params) => {
           this.packageNo = params['no'];
           this.initForm();
         }
       )
   }
-  
+
   ngOnDestroy() {
     this.storeSub.unsubscribe();
   }
 
   initForm() {
-    this.store.dispatch(PackageActions.fetchConfigItems({packageNo: this.packageNo}));    
+    this.store.dispatch(PackageActions.fetchConfigItems({packageNo: this.packageNo}));
 
     this.storeSub = this.store.select('package').pipe(
       map(packageState => ({
@@ -68,7 +68,7 @@ export class PackageDetailsComponent implements OnInit, OnDestroy {
 
       this.isMutable = isPackageMutable(this._package);
 
-      console.log(this._package);     
+      console.log(this._package);
 
       let committedOn = this._package.committedOn ? this._package.committedOn : '';
 
@@ -82,27 +82,26 @@ export class PackageDetailsComponent implements OnInit, OnDestroy {
       });
 
       this.isLoading = false;
-    });    
+    });
   }
 
   onSubmit() {
     let _package : Package = this.packageForm.value;
-    this._package.description = _package.description;    
+    this._package.description = _package.description;
 
     this.store.dispatch(PackageActions.savePackage({package: this._package}));
     if (this.itemsUpdated) {
       this.store.dispatch(PackageActions.saveRepackedPackage({packageNo: this._package.no, configItems: this.packedItems}));
     }
 
-    alert('Thanks!');
     this.navigate();
   }
 
-  onCommit() {    
+  onCommit() {
     this._package.committedBy = 'TODO';
     this._package.committedOn = new Date();
     this._package.status = 'Committed';
-   
+
     this.store.dispatch(PackageActions.savePackage({package: this._package}));
   }
 
@@ -115,7 +114,7 @@ export class PackageDetailsComponent implements OnInit, OnDestroy {
     this.packedItems = updatedItems.packedItems;
     this.unpackedItems = updatedItems.unpackedItems;
   }
-  
+
   private navigate() {
     this.router.navigate(['../'],{relativeTo: this.route});
   }

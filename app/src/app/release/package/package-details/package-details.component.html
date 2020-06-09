@@ -1,3 +1,10 @@
+<div *ngIf="isLoading" style="text-align: center;">
+  <mat-progress-spinner
+        class="example-margin"
+        color="primary"
+        mode="indeterminate">
+  </mat-progress-spinner>
+</div>
 <form [formGroup]="packageForm" novalidate (ngSubmit)="onSubmit()" *ngIf="!isLoading">
   <mat-card class="details-card">
     <mat-card-header>
@@ -16,7 +23,7 @@
         <div class="col">
           <mat-form-field class="full-width" floatLabel="always">
             <mat-label>Created By</mat-label>
-            <input matInput formControlName="createdBy">            
+            <input matInput formControlName="createdBy">
           </mat-form-field>
         </div>
       </div>
@@ -50,18 +57,18 @@
       </div>
       <app-config-item-list [items]="{packedItems: packedItems, unpackedItems: unpackedItems}"
         (itemsUpdated)="onItemsUpdated($event)">
-      </app-config-item-list>      
+      </app-config-item-list>
     </mat-card-content>
     <mat-card-actions>
       <div class="row">
         <div class="col">
-          <button mat-button color="accent" type="button" (click)="onCommit()" *ngIf="isMutable">Commit</button>
+          <button mat-button color="accent" type="button" (click)="onCommit()" *ngIf="isMutable && packedItems.length>0">Commit</button>
         </div>
         <div class="col" style="text-align: right;">
           <a mat-button (click)="onCancel()">{{isMutable ? 'Cancel' : 'Back'}}</a>
           <button mat-raised-button color="primary" type="submit" *ngIf="isMutable">Save</button>
         </div>
-      </div>            
+      </div>
     </mat-card-actions>
   </mat-card>
 </form>
