@@ -1,7 +1,6 @@
 package com.dineshkb.gnu.config
 
 import org.springframework.context.annotation.{Bean, Configuration}
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.{EnableWebSecurity, WebSecurityConfigurerAdapter}
 import org.springframework.web.cors.{CorsConfiguration, CorsConfigurationSource, UrlBasedCorsConfigurationSource}
@@ -11,18 +10,7 @@ import scala.collection.JavaConverters._
 @Configuration
 @EnableWebSecurity
 class BasicConfiguration extends WebSecurityConfigurerAdapter {
-  @throws[Exception]
-  override protected def configure(auth: AuthenticationManagerBuilder): Unit = {
-    auth
-      .inMemoryAuthentication
-      .withUser("user")
-      .password("{noop}password")
-      .roles("USER")
-      .and
-      .withUser("admin")
-      .password("{noop}admin")
-      .roles("USER", "ADMIN", "ACTUATOR")
-  }
+
 
   @throws[Exception]
   override protected def configure(http: HttpSecurity): Unit = {
@@ -35,7 +23,8 @@ class BasicConfiguration extends WebSecurityConfigurerAdapter {
       .anyRequest
       .authenticated
       .and
-      .httpBasic
+      .oauth2ResourceServer
+      .jwt
     http.headers.frameOptions.disable
     http.csrf.disable
   }
