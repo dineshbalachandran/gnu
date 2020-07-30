@@ -5,15 +5,18 @@ import { PackageListComponent } from './package/package-list/package-list.compon
 import { ReleaseComponent } from './release.component';
 import { PackageDetailsComponent } from './package/package-details/package-details.component';
 import { MigrateComponent } from './migrate/migrate.component';
+import { AuthGuard } from '../core/auth/auth.guard';
 
 const routes: Routes = [
     {
-        path: '', component: ReleaseComponent, //implementing lazy loading
+        path: '',
+        component: ReleaseComponent, //implementing lazy loading
+        canActivate: [AuthGuard],
         children: [
             {path: '',  redirectTo: 'package', pathMatch: 'full'},
             {path: 'package', component: PackageListComponent},
             {path: 'migrate', component: MigrateComponent},
-            {path: 'package/:no', component: PackageDetailsComponent}                       
+            {path: 'package/:no', component: PackageDetailsComponent}
         ]
     }
 ]

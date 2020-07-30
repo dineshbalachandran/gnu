@@ -1,6 +1,6 @@
 <mat-sidenav-container>
-  <mat-sidenav #sidenav mode="over">    
-    <div class="sidenav-content">
+  <mat-sidenav #sidenav mode="over">
+    <div class="sidenav-content" *ngIf="(isAuthenticated | async)">
       <ul>
         <li>
           <button mat-button>
@@ -8,8 +8,17 @@
           </button>
         </li>
         <li>
-          <button mat-button>
+          <button mat-button (click)="logout()">
             Sign Out
+          </button>
+        </li>
+      </ul>
+    </div>
+    <div class="sidenav-content" *ngIf="!(isAuthenticated | async)">
+      <ul>
+        <li>
+          <button mat-button (click)="login()">
+            Sign In
           </button>
         </li>
       </ul>

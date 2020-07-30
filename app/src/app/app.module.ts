@@ -27,7 +27,7 @@ import { PackageEffects } from './release/package/store/package.effects';
     StoreRouterConnectingModule.forRoot(),
     EffectsModule.forRoot([PackageEffects]),
     HttpClientModule,
-    CoreModule,
+    CoreModule.forRoot(),
     SharedModule
   ],
   providers: [],

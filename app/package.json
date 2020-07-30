@@ -23,6 +23,11 @@
     "@angular/router": "~9.1.9",
     "@ngrx/effects": "^9.2.0",
     "@ngrx/store": "^9.2.0",
+    "@okta/okta-angular": "^2.1.0",
+    "@okta/okta-auth-js": "^3.2.0",
+    "@okta/okta-signin-widget": "^4.2.2",
+    "angular-oauth2-oidc": "^10.0.3",
+    "angular-oauth2-oidc-jwks": "^9.0.0",
     "rxjs": "~6.5.5",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
